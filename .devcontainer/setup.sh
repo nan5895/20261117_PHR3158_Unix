@@ -7,9 +7,14 @@ REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 if command -v apt-get >/dev/null 2>&1 && [ "$(id -u)" != "0" ] && command -v sudo >/dev/null; then
   sudo apt-get update -qq
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq man-db manpages tree shellcheck vim nano less python3 >/dev/null
-  # Ubuntu 컨테이너 이미지는 man 페이지가 빠져 있으므로 복원 (수업에서 `man ls`를 사용)
+  # Ubuntu 컨테이너 이미지는 "minimized" 상태라 man 이 안내 스크립트로 바뀌어 있고 man 페이지도 빠져 있음
+  # → man 을 원래대로 돌리고, 수업에서 쓰는 명령의 man 페이지를 다시 설치 (약 10초)
   sudo rm -f /etc/dpkg/dpkg.cfg.d/excludes 2>/dev/null || true
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --reinstall coreutils grep sed >/dev/null 2>&1 || true
+  if dpkg-divert --list /usr/bin/man 2>/dev/null | grep -q man.REAL; then
+    sudo rm -f /usr/bin/man
+    sudo dpkg-divert --quiet --local --rename --remove /usr/bin/man || true
+  fi
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --reinstall man-db coreutils grep sed less tar >/dev/null 2>&1 || true
 fi
 
 # 2) 초보자용 터미널 설정: 짧은 프롬프트, check 명령어 PATH 등록
