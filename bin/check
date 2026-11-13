@@ -1,9 +1,9 @@
 #!/bin/bash
-# 자가 채점기:  check lab1 | lab2 | lab3 | lab4 | all
+# 자가 채점기:  check lab1 | lab2 | hw | all
 # 정답은 해시(sha256)로만 저장되어 있어서, 이 파일을 읽어도 답은 보이지 않습니다 :)
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-W="$ROOT/work"; R="$W/results"; D="$ROOT/data"
+W="$ROOT/work"; R="$W/results"; B="$W/bwa"
 PASS=0; FAIL=0
 G=$'\e[32m'; X=$'\e[31m'; Y=$'\e[33m'; N=$'\e[0m'
 
@@ -11,12 +11,12 @@ sha() { if command -v sha256sum >/dev/null; then sha256sum | cut -c1-16; else sh
 ok()  { echo "  ${G}✔${N} $1"; PASS=$((PASS+1)); }
 no()  { echo "  ${X}✘${N} $1"; [ -n "$2" ] && echo "    ${Y}힌트:${N} $2"; FAIL=$((FAIL+1)); }
 
-# 결과 파일을 "정규화"한 뒤 해시 비교 — 공백/형식/순서 차이는 너그럽게 봐줍니다
+# 결과 파일을 "정규화"한 뒤 해시 비교 — 공백/형식 차이는 너그럽게 봐줍니다
 norm() {  # $1=방식 $2=파일
   case "$1" in
-    num)     grep -oE -- '-?[0-9]+' "$2" | head -1 ;;
-    pairset) tr -d '\r' < "$2" | awk 'NF{print $1, $NF}' | LC_ALL=C sort | tr '\n' ';' ;;
-    ox)      tr -d '\r' < "$2" | tr 'a-z' 'A-Z' | grep -oE '[OX]' | tr -d '\n' ;;
+    num)    grep -oE -- '-?[0-9]+' "$2" | head -1 ;;
+    base)   tr -d '\r' < "$2" | tr 'a-z' 'A-Z' | grep -oE '[ACGT]' | head -1 ;;
+    mapped) grep -m1 ' mapped (' "$2" | grep -oE '^[0-9]+' ;;
   esac
 }
 expect() {  # $1=파일 $2=방식 $3=해시 $4=설명 $5=힌트
@@ -24,57 +24,51 @@ expect() {  # $1=파일 $2=방식 $3=해시 $4=설명 $5=힌트
   if [ ! -s "$f" ]; then no "$4 — work/results/$1 파일이 없거나 비어 있음" "$5"; return; fi
   if [ "$(norm "$2" "$f" | sha)" == "$3" ]; then ok "$4"; else no "$4 — 값이 다릅니다" "$5"; fi
 }
-has_num() {  # 텍스트($1) 안의 숫자 중 해시($2)와 같은 것이 있는가
-  local x
-  for x in $(echo "$1" | grep -oE '[0-9]+' | sort -u); do
-    [ "$(echo "$x" | sha)" == "$2" ] && return 0
-  done
-  return 1
+exists() {  # $1=파일 $2=설명 $3=힌트
+  [ -s "$1" ] && ok "$2" || no "$2 — ${1#$ROOT/} 파일이 없습니다" "$3"
 }
 
 lab1() {
-  echo "▶ Lab 1: 폴더와 파일"
-  local p="$W/project"
-  [ -d "$p" ] && ok "work/project 폴더 존재" || { no "work/project 폴더가 없습니다" "mkdir work/project"; return; }
-  [ "$(ls "$p/raw/run1" 2>/dev/null | tr '\n' ' ')" == "$(cd "$D/incoming" && ls S?_R1.fastq | tr '\n' ' ')" ] \
-    && ok "raw/run1 에 S1~S9" || no "raw/run1 내용이 다릅니다" "S?_R1.fastq 는 'S + 글자 1개'"
-  [ "$(ls "$p/raw/run2" 2>/dev/null | tr '\n' ' ')" == "S10_R1.fastq S11_R1.fastq S12_R1.fastq " ] \
-    && ok "raw/run2 에 S10~S12" || no "raw/run2 내용이 다릅니다" "S??_R1.fastq 는 'S + 글자 정확히 2개'"
-  [ "$(ls "$p/ref" 2>/dev/null)" == "genome.fasta" ] && cmp -s "$p/ref/genome.fasta" "$D/ref/genome.fasta" \
-    && ok "ref/ 에 genome.fasta 만 있음" || no "ref/ 에는 genome.fasta 하나만 있어야 합니다" "cp 로 복사, 연습용 파일은 rm 으로 삭제"
+  echo "▶ Lab 1: 서열 정렬"
+  expect lab1_score.txt    num 53c234e5e8472b6a "Q1 AATC vs AAGC 정렬 점수" "python3 tools/align.py AATC AAGC | grep score > work/results/lab1_score.txt"
+  expect lab1_mutation.txt num eea8254c7500ba3d "Q2 불일치 위치 (region 의 몇 번째 글자)" "--local 정렬 결과의 '불일치:' 줄에서 seq2 의 몇 번째인지 → echo 숫자 > work/results/lab1_mutation.txt"
 }
 
 lab2() {
-  echo "▶ Lab 2: 서열 파일"
-  expect lab2_nseq.txt       num 1121cfccd5913f0a "서열(염색체) 개수" "grep -c '>' (따옴표 필수)"
-  expect lab2_genome_len.txt num b4addf3d72342849 "유전체 길이(bp)" "줄바꿈 글자도 1글자로 세어집니다: tr -d '\\n'"
-  expect lab2_reads_S1.txt   num c20a6b775fd3479e "S1 리드 수" "wc -l 의 줄 수 ÷ 4"
+  echo "▶ Lab 2: BWA + samtools"
+  exists "$B/genome.fasta.bwt" "1. bwa index (참조 색인)"   "mkdir work/bwa → cp data/ref/genome.fasta work/bwa/ → bwa index work/bwa/genome.fasta"
+  exists "$B/sample1.bam"      "3. samtools sort (BAM 파일)" "samtools sort -o work/bwa/sample1.bam work/bwa/sample1.sam"
+  exists "$B/sample1.bam.bai"  "3. samtools index (BAM 색인)" "samtools index work/bwa/sample1.bam"
+  expect lab2_flagstat.txt mapped f5aee7df0c39c948 "Q1 flagstat 결과" "samtools flagstat work/bwa/sample1.bam > work/results/lab2_flagstat.txt"
+  expect lab2_base.txt     base   12f37a8a84034d3e "Q2 chr2:1500 에서 리드들이 읽은 글자" "tview 화면의 맨 왼쪽 세로줄. '.' ',' 가 아니라 '글자'가 적힌 줄을 보세요"
 }
 
-lab3() {
-  echo "▶ Lab 3: 정렬 — DP 와 SAM"
-  expect lab3_nw_score.txt num     ee3aa64bb94a5084   "GATTACA vs GCATGCT 정렬 점수" "python3 tools/align.py GATTACA GCATGCT | grep score"
-  expect lab3_nw_gap1.txt  num     9a271f2a916b0b6e "gap -1 일 때 점수" "명령 끝에 --gap -1"
-  expect lab3_flag.txt     pairset 7947adab875c9c31 "FLAG 별 개수 표" "헤더(@) 먼저 빼기: grep -v '^@' → cut -f2 → sort → uniq -c"
-  expect lab3_chr.txt      pairset a1b57df7b764a84f  "염색체별 리드 수 표" "같은 공식에서 cut -f3"
+hw() {
+  echo "▶ 숙제: 스크립트로 sample2 분석"
+  sed 's/#.*//' "$ROOT/scripts/wgs_pipeline.sh" | grep -q '____' \
+    && no "scripts/wgs_pipeline.sh 에 빈칸(____)이 남아 있습니다" "빈칸을 채우고 Ctrl+S 로 저장" \
+    || ok "스크립트 빈칸 채우기"
+  expect hw_flagstat.txt mapped 58bdc6c4a0bea735 "Q1 sample2 flagstat (스크립트가 자동 저장)" "bash scripts/wgs_pipeline.sh 를 실행하면 자동으로 만들어집니다"
+  expect hw_base.txt     base   678f81a714fbc720 "Q2 sample2 의 chr2:1500 글자" "모두 '.' ',' 라면 참조와 같다는 뜻 → 참조(둘째 줄) 글자를 적으세요"
 }
 
-lab4() {
-  echo "▶ Lab 4: 셸 스크립트와 AI"
-  local out; out=$(cd "$ROOT" && bash scripts/count_reads.sh 2>&1)
-  if [ "$(echo "$out" | grep -c 'fastq')" == "12" ] && has_num "$out" c20a6b775fd3479e; then ok "count_reads.sh 빈칸 채우기"
-  else no "count_reads.sh 결과가 다릅니다" "빈칸에는 숫자 하나. FASTQ 리드 1개는 몇 줄?"; fi
-  expect lab4_bug.txt  num fe028cccfcfd1aad "AI 버그 수정: S1 chr2 리드 수" "@SQ 헤더 줄에도 chr2 가 들어 있습니다"
-  expect lab4_quiz.txt ox  fb2a2b1c7d6b7ac3 "O/X 퀴즈 (5문항)" "틀린 문항은 옆 사람과 토론. 직접 실행하지 마세요!"
-  local v; v=$(grep -cE '^- 검증: *[^ (]' "$W/ai_log.md" 2>/dev/null); v=${v:-0}
-  [ "$v" -ge 1 ] && ok "AI 사용 기록 ${v}건" || no "work/ai_log.md 의 '- 검증:' 칸을 내 경험으로 채우세요" "cp labs/ai_log_template.md work/ai_log.md"
+clue() {  # 통과하면 다음 이야기
+  [ "$FAIL" -eq 0 ] || return
+  case "$1" in
+    lab1) echo ""; echo "${Y}🤔 리드 1개에서 불일치 1개를 찾았습니다. 시퀀싱 오류일까요, 진짜 변이일까요?${N}"
+          echo "   리드 1개로는 알 수 없습니다 → 리드 3천 개를 정렬해서 쌓아 봅시다:  labs/lab2_bwa_samtools.md" ;;
+    lab2) echo ""; echo "${G}🎉 sample1 의 chr2:1500 은 모든 리드가 같은 글자 → 시퀀싱 오류가 아니라 진짜 변이(SNV)!${N}"
+          echo "   숙제: labs/homework.md   (실제 분석에서는 다음 단계로 bcftools 같은 변이 호출 프로그램을 씁니다)"
+          echo "   마지막으로 Source Control → Commit → Sync Changes 로 제출!" ;;
+    hw)   echo ""; echo "${G}🎉 숙제 완료! sample1 과 sample2 를 비교해 보세요. 마지막으로 Commit → Sync Changes!${N}" ;;
+  esac
 }
 
 case "$1" in
   __hash) norm "$2" "$3" | sha; exit 0 ;;
-  lab1|lab2|lab3|lab4) "$1" ;;
-  all) lab1; lab2; lab3; lab4 ;;
-  *) echo "사용법: check lab1 | lab2 | lab3 | lab4 | all"; exit 2 ;;
+  lab1|lab2|hw) "$1"; clue "$1" ;;
+  all) lab1; lab2; hw ;;
+  *) echo "사용법: check lab1 | lab2 | hw | all"; exit 2 ;;
 esac
 echo ""; echo "결과: ${G}${PASS} 통과${N}, ${X}${FAIL} 실패${N}"
 [ "$FAIL" -eq 0 ]

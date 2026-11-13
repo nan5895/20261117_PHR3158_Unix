@@ -3,10 +3,10 @@
 set -e
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
-# 1) 수업에 쓰는 도구 설치 (man 페이지, tree, shellcheck, vim/nano)
+# 1) 수업에 쓰는 도구 설치 (bwa, samtools, man 페이지, tree, shellcheck, vim/nano)
 if command -v apt-get >/dev/null 2>&1 && [ "$(id -u)" != "0" ] && command -v sudo >/dev/null; then
   sudo apt-get update -qq
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq man-db manpages tree shellcheck vim nano less python3 >/dev/null
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools man-db manpages tree shellcheck vim nano less python3 >/dev/null
   # Ubuntu 컨테이너 이미지는 "minimized" 상태라 man 이 안내 스크립트로 바뀌어 있고 man 페이지도 빠져 있음
   # → man 을 원래대로 돌리고, 수업에서 쓰는 명령의 man 페이지를 다시 설치 (약 10초)
   sudo rm -f /etc/dpkg/dpkg.cfg.d/excludes 2>/dev/null || true

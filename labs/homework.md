@@ -1,0 +1,53 @@
+# 📝 숙제 — 스크립트로 sample2 분석하기
+
+> Lab 2 에서는 명령을 한 줄씩 쳤습니다. 샘플이 100명이라면? 매번 다 칠 수는 없습니다.
+> 그래서 명령을 **파일 하나에 모아 두고(= 셸 스크립트)** 한 번에 실행합니다.
+> 이번에는 **다른 사람(sample2)** 의 WGS 데이터를 분석해서 sample1 과 비교합니다.
+
+## 1. 스크립트 읽어 보기
+
+왼쪽 탐색기에서 `scripts/wgs_pipeline.sh` 를 클릭해서 엽니다.
+`#` 뒤의 설명을 읽으면서, **Lab 2 에서 친 명령과 같은 줄**을 찾아보세요.
+
+## 2. 빈칸 2개 채우기
+
+| 빈칸 | 힌트 |
+|---|---|
+| ★ 빈칸 1 `SAMPLE=____` | 분석할 샘플 이름. 터미널에서 `ls data/wgs` → 파일 이름의 `_R1.fastq` 앞부분 |
+| ★ 빈칸 2 `samtools ____` | BAM 색인을 만드는 명령. Lab 2 의 **3번**을 보세요 |
+
+> ⚠️ `SAMPLE=` 의 `=` 앞뒤에 **띄어쓰기를 넣지 마세요**. (`SAMPLE = x` ❌ → `SAMPLE=x` ⭕)
+> 다 채웠으면 **Ctrl+S** 로 저장! (탭 이름 옆의 ● 가 사라지면 저장된 것)
+
+## 3. 실행하기
+
+```bash
+bash scripts/wgs_pipeline.sh
+```
+
+`✅ 끝!` 이 나오면 성공입니다. flagstat 결과(**Q1**)는 `work/results/hw_flagstat.txt` 에 **자동으로** 저장됩니다.
+에러가 나면 빨간 글자를 읽어 보세요. 대부분 빈칸 오타입니다.
+
+## 4. chr2:1500 확인하기
+
+```bash
+samtools tview -d T -p chr2:1500 work/bwa/sample2.bam work/bwa/genome.fasta
+```
+
+**Q2.** sample2 의 chr2:1500 은 어떤 글자인가요?
+- 맨 왼쪽 세로줄이 모두 `.` `,` 라면 → **참조와 같다**는 뜻 → 2번째 줄(참조)의 맨 왼쪽 글자를 적으세요
+
+```bash
+echo 글자 > work/results/hw_base.txt
+```
+
+## ✅ 확인 & 제출
+
+```bash
+check hw
+```
+
+통과하면 **Source Control → Commit → Sync Changes**.
+
+🤔 **생각해 보기 (채점 없음)**: sample1 과 sample2 는 chr2:1500 에서 글자가 다릅니다.
+실제 WGS 에서는 이런 차이(변이)를 수백만 개 찾아서 질병이나 **약물 반응의 차이**와 연결합니다.
