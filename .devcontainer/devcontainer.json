@@ -6,6 +6,8 @@
     "ghcr.io/devcontainers/features/sshd:1": {}
   },
   "postCreateCommand": "bash .devcontainer/setup.sh",
+  "waitFor": "postCreateCommand",
+  "remoteEnv": { "REPO": "${containerWorkspaceFolder}" },
   "customizations": {
     "codespaces": {
       "openFiles": ["README.md"]

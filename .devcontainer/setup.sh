@@ -31,4 +31,10 @@ alias ll='ls -lh'
 EOF
 fi
 chmod +x "$REPO_DIR/bin/"* "$REPO_DIR/scripts/"*.sh 2>/dev/null || true
+
+# 3) check 명령을 어느 터미널에서나 쓸 수 있게 (설정이 끝나기 전에 열린 터미널 포함)
+if command -v sudo >/dev/null; then
+  printf '#!/bin/bash\nexec bash "%s/bin/check" "$@"\n' "$REPO_DIR" | sudo tee /usr/local/bin/check >/dev/null
+  sudo chmod +x /usr/local/bin/check
+fi
 echo "✅ 실습 환경 준비 완료"
