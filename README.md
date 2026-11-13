@@ -46,7 +46,7 @@ AI 사용법은 [`labs/AI_GUIDE.md`](labs/AI_GUIDE.md) (1분 요약)
 | `lab1/read.fa` | sample1 의 첫 번째 리드 1개 |
 | `lab1/region.fa` | 참조 유전체 chr2 의 1401~1600번 구간 |
 
-`tools/` 에는 수업에서 배운 알고리즘을 구현한 프로그램이 있습니다: `align.py` (Needleman-Wunsch / Smith-Waterman), `dotplot.py` (dot plot).
+`tools/` 에는 수업에서 배운 알고리즘을 **셸 스크립트로** 구현한 프로그램이 있습니다: `align.sh` (Needleman-Wunsch / Smith-Waterman), `dotplot.sh` (dot plot).
 
 > ⚠️ 모든 서열은 **교육용으로 만든 가상 데이터**입니다. 실제 사람 유전체는 30억 글자, 리드는 수억 개입니다.
 
@@ -61,6 +61,6 @@ AI 사용법은 [`labs/AI_GUIDE.md`](labs/AI_GUIDE.md) (1분 요약)
 
 1. 에러 메시지를 **소리 내어** 읽기
 2. 길을 잃었으면 `cd $REPO` (저장소 맨 위로)
-3. `명령어 --help` / `python3 tools/align.py --help`
+3. `명령어 --help` / `bash tools/align.sh --help`
 4. AI에게 묻기 — [`AI_GUIDE.md`](labs/AI_GUIDE.md) 의 규칙대로
 5. 조교/교수에게 질문

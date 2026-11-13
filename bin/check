@@ -36,7 +36,7 @@ exists() {  # $1=파일 $2=설명 $3=힌트
 
 lab1() {
   echo "▶ Lab 1: 서열 정렬"
-  expect lab1_score.txt    num 53c234e5e8472b6a "Q1 AATC vs AAGC 정렬 점수" "python3 tools/align.py AATC AAGC | grep score > work/results/lab1_score.txt"
+  expect lab1_score.txt    num 53c234e5e8472b6a "Q1 AATC vs AAGC 정렬 점수" "bash tools/align.sh AATC AAGC | grep score > work/results/lab1_score.txt"
   expect lab1_mutation.txt num eea8254c7500ba3d "Q2 불일치 위치 (region 의 몇 번째 글자)" "--local 정렬 결과의 '불일치:' 줄에서 seq2 의 몇 번째인지 → echo 숫자 > work/results/lab1_mutation.txt"
 }
 

@@ -15,7 +15,7 @@ Ubuntu bash 를 쓰고 있어. samtools flagstat 결과가 이래:
 ```
 
 ## 3. 검증하기
-- 다른 방법으로 한 번 더 확인하기 (예: Lab 1 의 align.py 결과와 Lab 2 의 BWA 결과가 같은 위치인지)
+- 다른 방법으로 한 번 더 확인하기 (예: Lab 1 의 align.sh 결과와 Lab 2 의 BWA 결과가 같은 위치인지)
 - 작은 예제를 손으로 계산하기
 - `man 명령어`, `명령어 --help` 로 옵션 확인
 

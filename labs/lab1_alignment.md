@@ -35,17 +35,18 @@ grep -c CAATCCGAACTATCTATTCCCAGAAGTATGCCGGTCGAAAGACTCCTGACGGAAGCAAGACATCAGCTGAAC
 
 ## 2. 수업 예제를 컴퓨터로: Needleman-Wunsch (5분)
 
-`tools/align.py` 는 수업에서 배운 DP 정렬 프로그램입니다. (점수: 일치 +1, 불일치 −1, gap −2)
+`tools/align.sh` 는 수업에서 배운 DP 정렬을 **셸 스크립트로** 만든 프로그램입니다. (점수: 일치 +1, 불일치 −1, gap −2)
+궁금하면 왼쪽 탐색기에서 `tools/align.sh` 를 열어 보세요. 수업의 점화식이 `for` 반복문 두 개로 들어 있습니다.
 
 ```bash
-python3 tools/align.py AATC AAGC --matrix
+bash tools/align.sh AATC AAGC --matrix
 ```
 
 ✍️ 화면의 표가 수업 슬라이드의 DP 행렬과 같은가요? **오른쪽 아래 숫자 = 최종 점수**
 
 **Q1.** 정렬 점수를 파일로 저장합니다. (`>` = 화면 대신 파일에 저장)
 ```bash
-python3 tools/align.py AATC AAGC | grep score > work/results/lab1_score.txt
+bash tools/align.sh AATC AAGC | grep score > work/results/lab1_score.txt
 cat work/results/lab1_score.txt
 ```
 
@@ -54,7 +55,7 @@ cat work/results/lab1_score.txt
 이번엔 서열 대신 **파일 이름**을 넣습니다. `--local` = 지역 정렬 (짧은 리드를 긴 참조 안에서 찾을 때)
 
 ```bash
-python3 tools/align.py data/lab1/read.fa data/lab1/region.fa --local
+bash tools/align.sh data/lab1/read.fa data/lab1/region.fa --local
 ```
 
 화면 읽는 법:
@@ -84,5 +85,5 @@ check lab1
 ---
 ⏱ **빨리 끝났다면**: 수업의 "Can you try?" — gap 점수를 −1 로 바꾸면 행렬이 어떻게 바뀔까요?
 ```bash
-python3 tools/align.py AATC AAGC --matrix --gap -1
+bash tools/align.sh AATC AAGC --matrix --gap -1
 ```
