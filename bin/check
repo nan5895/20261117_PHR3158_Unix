@@ -4,8 +4,8 @@
 # 채점 결과는 교수님의 구글 폼으로 자동 제출됩니다 (학번, 이름, GitHub ID, 실습, 결과)
 
 # ---- 제출용 구글 폼 (강사가 설정) ----
-FORM_URL=""                 # https://docs.google.com/forms/d/e/<폼ID>/formResponse
-F_ID="";  F_NAME="";  F_GH="";  F_LAB="";  F_RESULT=""     # 각 문항의 entry.숫자
+FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSdErR-wKrhgSUIQRq8AhCv4Lx3ldq9C76nMhJdYcG_iGF_6kg/formResponse"                 # https://docs.google.com/forms/d/e/<폼ID>/formResponse
+F_ID="entry.483749705";  F_NAME="entry.877453942";  F_GH="entry.128890656";  F_LAB="entry.1008627707";  F_RESULT="entry.273710506"     # 각 문항의 entry.숫자
 ME="$HOME/.phr3158_student"  # 학번·이름 저장 위치
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
