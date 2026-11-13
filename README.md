@@ -5,15 +5,19 @@
 
 ## 0. 시작하기 (5분)
 
-1. 수업 링크(GitHub Classroom)를 눌러 과제를 수락합니다 → 내 저장소가 만들어집니다.
-2. 내 저장소에서 초록색 **`<> Code` → `Codespaces` → `Create codespace on main`** 을 누릅니다.
+1. GitHub 에 로그인합니다. (계정이 없으면 github.com 에서 가입)
+2. 아래 링크를 누르고 **Create codespace** 를 누릅니다.
+
+   👉 **https://codespaces.new/nan5895/20261117_PHR3158_Unix?quickstart=1**
+
 3. 1~2분 기다리면 VS Code 화면이 열리고 아래쪽에 **터미널**이 보입니다.
+   (숙제할 때도 **같은 링크**를 누르면 수업 때 쓰던 화면이 그대로 다시 열립니다)
    (안 보이면 메뉴 `☰ → Terminal → New Terminal`)
 4. 터미널에 입력해 보세요:
 
    ```bash
    ls data
-   bwa
+   check lab1
    ```
 
 > 💡 Codespace 는 내 컴퓨터가 아니라 **클라우드에 있는 리눅스 컴퓨터**입니다. 실제 연구실의 분석 서버에 접속하는 것과 같은 경험입니다.
@@ -48,7 +52,10 @@ AI 사용법은 [`labs/AI_GUIDE.md`](labs/AI_GUIDE.md) (1분 요약)
 
 ## 3. 제출하기
 
-결과는 `work/` 폴더에 저장됩니다. 끝나면 왼쪽 **Source Control(가지 모양 아이콘)** → 메시지 입력 → **Commit** → **Sync Changes**. 자동 채점이 돌아갑니다.
+따로 할 일이 없습니다. `check lab1` 처럼 **check 를 실행하면 결과가 자동으로 제출**됩니다.
+처음 한 번만 학번과 이름을 묻습니다. 잘못 입력했으면 `check reset` 으로 다시 입력하세요.
+
+> ⚠️ Codespace 를 **삭제하지 마세요.** 삭제하면 실습한 내용이 사라집니다. (30일 동안 안 쓰면 자동 삭제)
 
 ## 4. 막혔을 때
 

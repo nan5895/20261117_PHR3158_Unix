@@ -117,7 +117,7 @@ echo 글자 > work/results/lab2_base.txt
 check lab2
 ```
 
-통과하면 왼쪽 **Source Control**(가지 모양 아이콘) → 메시지 입력 → **Commit** → **Sync Changes** 로 제출!
+`📨 제출 완료` 가 나오면 끝! (결과는 자동으로 교수님께 제출됩니다)
 
 ---
 ⏱ **빨리 끝났다면**: `-d T` 를 빼고 실행하면 화살표로 움직이며 볼 수 있습니다 (나가기: `q`)

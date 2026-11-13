@@ -41,13 +41,15 @@ samtools tview -d T -p chr2:1500 work/bwa/sample2.bam work/bwa/genome.fasta
 echo 글자 > work/results/hw_base.txt
 ```
 
-## ✅ 확인 & 제출
+## ✅ 확인 = 제출
 
 ```bash
 check hw
 ```
 
-통과하면 **Source Control → Commit → Sync Changes**.
+`📨 제출 완료` 가 나오면 끝! (틀려도 다시 고치고 `check hw` 하면 마지막 결과로 덮어씁니다)
+
+> 💡 숙제할 때는 수업 때와 **같은 링크**를 누르면 수업 때 쓰던 화면이 그대로 다시 열립니다.
 
 🤔 **생각해 보기 (채점 없음)**: sample1 과 sample2 는 chr2:1500 에서 글자가 다릅니다.
 실제 WGS 에서는 이런 차이(변이)를 수백만 개 찾아서 질병이나 **약물 반응의 차이**와 연결합니다.
