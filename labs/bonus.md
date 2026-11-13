@@ -30,4 +30,4 @@ samtools view work/bwa/sample1.bam chr2:1500-1500 | wc -l         # chr2:1500 �
 time bash tools/align.sh data/lab1/read.fa data/lab1/region.fa --local > /dev/null   # 리드 1개 × 200글자
 time bwa mem work/bwa/genome.fasta data/wgs/sample1_R1.fastq > /dev/null 2>&1            # 리드 1540개 × 16,000글자
 ```
-사람 유전체(30억 글자) × 리드 6억 개라면 DP 로 몇 년이 걸릴까요? (힌트: DP 시간 ∝ 두 서열 길이의 곱)
+사람 유전체(30억 글자) × 리드 6억 개를 DP 로만 정렬하면 얼마나 걸릴까요? (힌트: DP 시간 ∝ 두 서열 길이의 곱. 리드 1개 × 200글자가 위에서 몇 초였나요?)

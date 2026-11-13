@@ -68,17 +68,18 @@ sc() {  # sc i j : s 의 i번째 글자와 t 의 j번째 글자가 같으면 mat
     if [ "${s:$1-1:1}" == "${t:$2-1:1}" ]; then SC=$MATCH; else SC=$MISMATCH; fi
 }
 
-# ---------- 4. 나머지 칸: 세 방향 중 최대값 (지역 정렬은 0 보다 작으면 0) ----------
+# ---------- 4. 나머지 칸: 세 방향 중 최대값 (지역 정렬은 max 에 0 을 추가 → 음수 대신 0) ----------
 best=0; bi=0; bj=0
 for ((i = 1; i <= n; i++)); do
     for ((j = 1; j <= m; j++)); do
         sc $i $j
-        diag=$(( F[(i-1)*W + j-1] + SC ))      # ↘ 대각선: 두 글자를 맞춤
-        up=$((   F[(i-1)*W + j]   + GAP ))     # seq2 쪽에 gap
-        left=$(( F[i*W + j-1]     + GAP ))     # seq1 쪽에 gap
+        # 수업의 점화식 (가로 = seq1 의 i번째, 세로 = seq2 의 j번째)
+        diag=$(( F[(i-1)*W + j-1] + SC ))      # S(i-1, j-1) + (mis)match  ↘ 대각선: 두 글자를 맞춤
+        vert=$(( F[i*W + j-1]     + GAP ))     # S(i, j-1)   + gap         ↓ 세로: seq2 글자 vs gap
+        horz=$(( F[(i-1)*W + j]   + GAP ))     # S(i-1, j)   + gap         → 가로: seq1 글자 vs gap
         v=$diag
-        [ $up -gt $v ] && v=$up
-        [ $left -gt $v ] && v=$left
+        [ $horz -gt $v ] && v=$horz
+        [ $vert -gt $v ] && v=$vert
         if [ $LOCAL -eq 1 ]; then
             [ $v -lt 0 ] && v=0
             if [ $v -gt $best ]; then best=$v; bi=$i; bj=$j; fi

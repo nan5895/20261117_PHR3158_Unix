@@ -85,5 +85,6 @@ check lab1
 ---
 ⏱ **빨리 끝났다면**: 수업의 "Can you try?" — gap 점수를 −1 로 바꾸면 행렬이 어떻게 바뀔까요?
 ```bash
-bash tools/align.sh AATC AAGC --matrix --gap -1
+bash tools/align.sh AATC AAGC --matrix --gap -1             # 전역 정렬 (Needleman-Wunsch)
+bash tools/align.sh AATC AAGC --matrix --gap -1 --local     # 두 번째 "Can you try?": max 에 0 추가 = 지역 정렬
 ```
